@@ -32,6 +32,13 @@ local function loadSettings()
         fov = 100,
         volume = 50,
         customCrosshairEnabled = false,
+        customFontEnabled = false,
+        lightingNoFog = false,
+        lightingNoWind = false,
+        betterLighting = false,
+        frameBuffer = 0,
+        textureQuality = "automatic",
+        customCrosshairImage = "rbxassetid://123456789"  -- Placeholder ID
     }
     return settings
 end
@@ -70,6 +77,16 @@ local CrosshairToggle = ModsTab:AddToggle({
     end
 })
 
+ModsTab:AddImage({
+    Name = "Custom Crosshair Image",
+    ImageID = settings.customCrosshairImage,
+    Default = false,
+    Callback = function(value)
+        settings.customCrosshairImage = value
+        print("Crosshair Image set to: " .. value)
+    end
+})
+
 -- Lighting Settings
 local LightingTab = Window:MakeTab({
     Name = "Lighting",
@@ -79,17 +96,28 @@ local LightingTab = Window:MakeTab({
 
 LightingTab:AddToggle({
     Name = "No Fog",
-    Default = false,
+    Default = settings.lightingNoFog,
     Callback = function(value)
+        settings.lightingNoFog = value
         print("No Fog: " .. tostring(value))
     end
 })
 
 LightingTab:AddToggle({
     Name = "No Wind",
-    Default = false,
+    Default = settings.lightingNoWind,
     Callback = function(value)
+        settings.lightingNoWind = value
         print("No Wind: " .. tostring(value))
+    end
+})
+
+LightingTab:AddToggle({
+    Name = "Better Lighting",
+    Default = settings.betterLighting,
+    Callback = function(value)
+        settings.betterLighting = value
+        print("Better Lighting: " .. tostring(value))
     end
 })
 
@@ -105,15 +133,6 @@ local GraphicsTab = EngineTab:AddSection({
     Name = "Graphics"
 })
 
-GraphicsTab:AddToggle({
-    Name = "Better Lighting",
-    Default = false,
-    Callback = function(value)
-        print("Better Lighting: " .. tostring(value))
-    end
-})
-
--- Frame Buffer and FOV sliders
 GraphicsTab:AddSlider({
     Name = "FOV",
     Min = 60,
@@ -122,6 +141,39 @@ GraphicsTab:AddSlider({
     Callback = function(value)
         settings.fov = value
         print("FOV set to: " .. value)
+    end
+})
+
+GraphicsTab:AddDropdown({
+    Name = "Texture Quality",
+    Options = {"Automatic", "Lowest", "Low", "Medium", "High"},
+    Default = settings.textureQuality,
+    Callback = function(value)
+        settings.textureQuality = value
+        print("Texture Quality set to: " .. value)
+    end
+})
+
+GraphicsTab:AddSlider({
+    Name = "Frame Buffer",
+    Min = 0,
+    Max = 10,
+    Default = settings.frameBuffer,
+    Callback = function(value)
+        settings.frameBuffer = value
+        print("Frame Buffer set to: " .. value)
+    end
+})
+
+-- Frame Limit Setting
+GraphicsTab:AddSlider({
+    Name = "Frame Limit",
+    Min = 30,
+    Max = 120,
+    Default = 60,
+    Callback = function(value)
+        settings.frameLimit = value
+        print("Frame Limit set to: " .. value)
     end
 })
 
@@ -137,12 +189,33 @@ CreditsTab:AddLabel("Credits to original developers of FirstStrap")
 CreditsTab:AddLabel("Credits to original developers of MobileBloxstrap")
 CreditsTab:AddLabel("Credits to me, Leo")
 
+-- Add Flag System (for specific custom actions)
+local FlagTab = Window:MakeTab({
+    Name = "Flags",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+FlagTab:AddTextbox({
+    Name = "Enter Flag",
+    Default = "",
+    TextDisappear = true,
+    Callback = function(value)
+        print("Flag entered: " .. value)
+        -- Process flag here, like activating certain mod features
+    end
+})
+
+-- Persistent Settings (Save settings when game exits)
+local function saveSettings()
+    -- Save the settings to a file or a storage service (simplified for demonstration)
+    print("Saving user settings...")
+    -- For example, we would store it in the user's local storage or data
+end
+
+game:BindToClose(function()
+    saveSettings()  -- Save settings when the game closes
+end)
+
 -- Final Setup to initialize the UI and make sure it doesn’t crash or disconnect
 BloxLib:Init()
-
--- Handle disconnect or exit to prevent crash
-game:BindToClose(function()
-    -- Save settings before exit (if applicable)
-    print("Saving settings...")
-    -- Call any function here to save settings
-end)
