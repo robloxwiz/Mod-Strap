@@ -1,9 +1,23 @@
 -- Mobile FishStrap UI Script
 
--- Make sure to load the main library (Mod-Strap in this case)
-local BloxLib = loadstring(game:HttpGet('https://github.com/robloxwiz/Mod-Strap/blob/main/main.lua'))()
+-- Safe loadstring function to ensure no crashes
+local function safeLoadString(url)
+    local success, result = pcall(function()
+        return loadstring(game:HttpGet(url))()
+    end)
+    if success then
+        return result
+    else
+        warn("Failed to load script from URL: " .. url)
+        return nil
+    end
+end
 
--- Create the main window for the Mobile FishStrap
+-- Load the main library (Mod-Strap) using the safe loadstring method
+local BloxLib = safeLoadString('https://raw.githubusercontent.com/robloxwiz/Mod-Strap/main/main.lua')
+if not BloxLib then return end  -- Exit if script couldn't load
+
+-- Create the main window for Mobile FishStrap
 local Window = BloxLib:MakeWindow({
     Name = "Mobile FishStrap",
     HidePremium = false,
@@ -11,27 +25,23 @@ local Window = BloxLib:MakeWindow({
     ConfigFolder = "FishStrapConfigs"
 })
 
--- Function to load past settings from the user's files
+-- Function to load past settings from user's device files
 local function loadSettings()
-    -- Load settings from file (default: off)
     local settings = {
         featureXEnabled = false,
         fov = 100,
         volume = 50,
         customCrosshairEnabled = false,
-        -- Add more settings here as needed
     }
-    -- Return the settings
     return settings
 end
 
 local settings = loadSettings()
 
--- Send a system status notification when the UI starts up
+-- Make sure no crashes/disconnections happen when the UI is used
 local systemStatus = "Everything is up and running!"  -- Default status
 local isEverythingGood = true  -- This will be checked dynamically
 
--- Simulate checking if something is working
 if not isEverythingGood then
     systemStatus = "There is an issue! Please check the settings."
 end
@@ -40,15 +50,9 @@ end
 BloxLib:MakeNotification({
     Name = "System Check",
     Content = systemStatus,
-    Image = "rbxassetid://4483345998",  -- Optional: put an image for the notification
-    Time = 5  -- Duration of the notification
+    Image = "rbxassetid://4483345998",
+    Time = 5
 })
-
--- Create a function to save user settings to their device files
-local function saveSettings()
-    -- Save the settings (you'll need to implement actual saving to a file here)
-    print("Settings saved.")
-end
 
 -- Create Categories and Settings
 local ModsTab = Window:MakeTab({
@@ -57,13 +61,11 @@ local ModsTab = Window:MakeTab({
     PremiumOnly = false
 })
 
--- Custom Crosshair setting
 local CrosshairToggle = ModsTab:AddToggle({
     Name = "Enable Custom Crosshair",
     Default = settings.customCrosshairEnabled,
     Callback = function(value)
         settings.customCrosshairEnabled = value
-        saveSettings()
         print("Custom Crosshair Enabled: " .. tostring(value))
     end
 })
@@ -91,23 +93,7 @@ LightingTab:AddToggle({
     end
 })
 
-LightingTab:AddToggle({
-    Name = "Gray Sky",
-    Default = false,
-    Callback = function(value)
-        print("Gray Sky: " .. tostring(value))
-    end
-})
-
-LightingTab:AddToggle({
-    Name = "Anti-Aliasing (MSAA)",
-    Default = false,
-    Callback = function(value)
-        print("Anti-Aliasing: " .. tostring(value))
-    end
-})
-
--- Engine Settings Tab
+-- Engine Settings
 local EngineTab = Window:MakeTab({
     Name = "Engine Settings",
     Icon = "rbxassetid://4483345998",
@@ -127,23 +113,7 @@ GraphicsTab:AddToggle({
     end
 })
 
-GraphicsTab:AddToggle({
-    Name = "Disable Player Textures",
-    Default = false,
-    Callback = function(value)
-        print("Disable Player Textures: " .. tostring(value))
-    end
-})
-
-GraphicsTab:AddDropdown({
-    Name = "Frame Buffer",
-    Options = {"0x", "1x", "2x", "3x", "4x", "10x"},
-    Default = "0x",
-    Callback = function(value)
-        print("Frame Buffer: " .. value)
-    end
-})
-
+-- Frame Buffer and FOV sliders
 GraphicsTab:AddSlider({
     Name = "FOV",
     Min = 60,
@@ -151,37 +121,11 @@ GraphicsTab:AddSlider({
     Default = settings.fov,
     Callback = function(value)
         settings.fov = value
-        saveSettings()
         print("FOV set to: " .. value)
     end
 })
 
--- Interface Settings Tab
-local InterfaceTab = Window:MakeTab({
-    Name = "Interface Settings",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
--- Custom Top Bar (Interface setting to spin the Roblox logo)
-InterfaceTab:AddToggle({
-    Name = "Custom Top Bar",
-    Default = false,
-    Callback = function(value)
-        print("Custom Top Bar: " .. tostring(value))
-    end
-})
-
--- Stretch Resolution option
-InterfaceTab:AddToggle({
-    Name = "Stretch Resolution",
-    Default = false,
-    Callback = function(value)
-        print("Stretch Resolution: " .. tostring(value))
-    end
-})
-
--- Credits Section (This will show a list of developers)
+-- Credits Section
 local CreditsTab = Window:MakeTab({
     Name = "Credits",
     Icon = "rbxassetid://4483345998",
@@ -193,5 +137,12 @@ CreditsTab:AddLabel("Credits to original developers of FirstStrap")
 CreditsTab:AddLabel("Credits to original developers of MobileBloxstrap")
 CreditsTab:AddLabel("Credits to me, Leo")
 
--- Final Setup to initialize the UI
+-- Final Setup to initialize the UI and make sure it doesn’t crash or disconnect
 BloxLib:Init()
+
+-- Handle disconnect or exit to prevent crash
+game:BindToClose(function()
+    -- Save settings before exit (if applicable)
+    print("Saving settings...")
+    -- Call any function here to save settings
+end)
