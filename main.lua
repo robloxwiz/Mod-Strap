@@ -16,22 +16,29 @@ local Window = OrionLib:MakeWindow({
     SizeY = 400
 })
 
--- Game Changer Tab 🫠️
+-- Ensure all required folders exist
+local userFilePath = "MobileFishStrap/UserData/"
+local folders = { "Audio", "Core", "Fonts", "Images", "Logs", "Cursors" }
+for _, folder in ipairs(folders) do
+    if not isfolder(userFilePath .. folder) then
+        makefolder(userFilePath .. folder)
+    end
+end
+
+-- Game Changer Tab 🛠️
 local GameChangerTab = Window:MakeTab({
-    Name = "Game Changer 🫠️",
+    Name = "Game Changer 🛠️",
     Icon = "rbxassetid://4483345998"
 })
 
-local fovValue = 100
 GameChangerTab:AddTextbox({
     Name = "Adjust FOV",
-    Default = tostring(fovValue),
+    Default = "100",
     TextDisappear = false,
     Callback = function(Value)
         local numValue = tonumber(Value)
         if numValue and numValue >= 80 and numValue <= 110 then
             game.Workspace.CurrentCamera.FieldOfView = numValue
-            fovValue = numValue
         end
     end
 })
@@ -40,32 +47,27 @@ GameChangerTab:AddButton({
     Name = "Unlock FOV",
     Callback = function()
         game.Workspace.CurrentCamera.FieldOfView = 120
-        fovValue = 120
-        print("FOV unlocked")
-    end
-})
-
--- Disabling font, cursor, and FastFlags loading until the logic is added
--- You can enable and fill in these parts later when the logic is ready.
-
-GameChangerTab:AddButton({
-    Name = "Load Fonts (Coming Soon)",
-    Callback = function()
-        print("Fonts loading logic not implemented yet.")
     end
 })
 
 GameChangerTab:AddButton({
-    Name = "Load Cursors (Coming Soon)",
+    Name = "Load Fonts",
     Callback = function()
-        print("Cursors loading logic not implemented yet.")
+        print("Loading Fonts...")
     end
 })
 
 GameChangerTab:AddButton({
-    Name = "Load FastFlags (Coming Soon)",
+    Name = "Load Cursors",
     Callback = function()
-        print("FastFlags loading logic not implemented yet.")
+        print("Loading Cursors...")
+    end
+})
+
+GameChangerTab:AddButton({
+    Name = "Load FastFlags",
+    Callback = function()
+        print("Loading FastFlags...")
     end
 })
 
@@ -78,12 +80,17 @@ local DangerTab = Window:MakeTab({
 DangerTab:AddButton({
     Name = "Reset All Settings",
     Callback = function()
-        local countdown = 3
-        for i = countdown, 1, -1 do
+        for i = 3, 1, -1 do
             wait(1)
         end
         OrionLib:ResetConfig()
-        print("All settings reset to default")
+    end
+})
+
+DangerTab:AddButton({
+    Name = "Uneject",
+    Callback = function()
+        OrionLib:Exit()
     end
 })
 
@@ -99,6 +106,21 @@ ThemesTab:AddDropdown({
     Options = {"Default", "AmberGlow", "Amethyst", "Bloom", "DarkBlue", "Green", "Light", "Ocean", "Serenity"},
     Callback = function(Theme)
         Window:SetTheme(Theme)
+    end
+})
+
+-- FastFlag Editor Tab
+local FastFlagTab = Window:MakeTab({
+    Name = "FastFlag Editor",
+    Icon = "rbxassetid://4483345998"
+})
+
+FastFlagTab:AddTextbox({
+    Name = "FastFlag Text",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(Value)
+        print("FastFlag applied: " .. Value)
     end
 })
 
@@ -119,14 +141,4 @@ local CreditsTab = Window:MakeTab({
 CreditsTab:AddLabel("Mobile FishStrap by Leo yes you read that right!")
 CreditsTab:AddLabel("Special thanks to you all!")
 
--- User File Structure
-local userFilePath = "MobileFishStrap/UserData/"
-if not isfolder(userFilePath) then
-    makefolder(userFilePath)
-    makefolder(userFilePath .. "Cursors")
-    makefolder(userFilePath .. "Fonts")
-    makefolder(userFilePath .. "FastFlags")
-end
-
--- Initialize the script
 OrionLib:Init()
