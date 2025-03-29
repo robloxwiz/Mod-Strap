@@ -45,27 +45,27 @@ GameChangerTab:AddButton({
     end
 })
 
+-- Disabling font, cursor, and FastFlags loading until the logic is added
+-- You can enable and fill in these parts later when the logic is ready.
+
 GameChangerTab:AddButton({
-    Name = "Load Fonts",
+    Name = "Load Fonts (Coming Soon)",
     Callback = function()
-        print("Loading Fonts...")
-        -- Add font loading logic here (e.g., loading custom fonts)
+        print("Fonts loading logic not implemented yet.")
     end
 })
 
 GameChangerTab:AddButton({
-    Name = "Load Cursors",
+    Name = "Load Cursors (Coming Soon)",
     Callback = function()
-        print("Loading Cursors...")
-        -- Add cursor loading logic here (e.g., loading custom cursors)
+        print("Cursors loading logic not implemented yet.")
     end
 })
 
 GameChangerTab:AddButton({
-    Name = "Load FastFlags",
+    Name = "Load FastFlags (Coming Soon)",
     Callback = function()
-        print("Loading FastFlags...")
-        -- Add FastFlags logic here
+        print("FastFlags loading logic not implemented yet.")
     end
 })
 
