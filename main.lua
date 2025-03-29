@@ -1,7 +1,6 @@
--- Load UI Library (OrionLib for stability)
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/jensonhirst/Orion/main/source')))()
 
--- Create Window
+-- Creating the Window
 local Window = OrionLib:MakeWindow({
     Name = "Mobile FishStrap",
     HidePremium = false,
@@ -10,25 +9,19 @@ local Window = OrionLib:MakeWindow({
     IntroEnabled = true,
     IntroText = "Welcome to Mobile FishStrap!",
     Icon = "rbxassetid://123456789",
-    IntroIcon = "rbxassetid://123456789"
+    IntroIcon = "rbxassetid://123456789",
+    HidePremium = true,
+    Draggable = true -- Make UI draggable
 })
 
--- Create Categories (Tabs on the Left Side)
-local GeneralTab = Window:MakeTab({ Name = "General", Icon = "rbxassetid://4483345998", PremiumOnly = false })
-local AdvancedTab = Window:MakeTab({ Name = "Advanced", Icon = "rbxassetid://4483345998", PremiumOnly = false })
-local DangerTab = Window:MakeTab({ Name = "⚠️ Danger", Icon = "rbxassetid://4483345998", PremiumOnly = false })
-local CreditsTab = Window:MakeTab({ Name = "Credits", Icon = "rbxassetid://4483345998", PremiumOnly = false })
-
--- General Settings
-GeneralTab:AddToggle({
-    Name = "Enable Smooth UI",
-    Default = false,
-    Callback = function(Value)
-        print("Smooth UI is now", Value and "enabled" or "disabled")
-    end    
+-- Settings Tab
+local SettingsTab = Window:MakeTab({
+    Name = "Settings",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
 })
 
-GeneralTab:AddSlider({
+SettingsTab:AddSlider({
     Name = "Adjust FOV",
     Min = 70,
     Max = 120,
@@ -36,44 +29,45 @@ GeneralTab:AddSlider({
     Increment = 1,
     ValueName = "FOV",
     Callback = function(Value)
-        print("FOV set to", Value)
+        game.Workspace.CurrentCamera.FieldOfView = Value
     end    
 })
 
-GeneralTab:AddDropdown({
-    Name = "Theme Selector",
-    Default = "Light Mode",
-    Options = {"Light Mode", "Dark Mode", "Custom"},
+SettingsTab:AddToggle({
+    Name = "Enable Smooth UI",
+    Default = false,
     Callback = function(Value)
-        print("Theme changed to", Value)
+        OrionLib.SmoothUI = Value
+    end    
+})
+
+-- Themes Tab
+local ThemesTab = Window:MakeTab({
+    Name = "Themes",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+ThemesTab:AddDropdown({
+    Name = "Select Theme",
+    Default = "Default",
+    Options = {"Default", "AmberGlow", "Amethyst", "Bloom", "DarkBlue", "Green", "Light", "Ocean", "Serenity"},
+    Callback = function(Theme)
+        Window:ModifyTheme(Theme)
     end
 })
 
--- Advanced Settings
-AdvancedTab:AddToggle({
-    Name = "Enable Experimental Mode",
-    Default = false,
-    Callback = function(Value)
-        print("Experimental Mode", Value and "enabled" or "disabled")
-    end    
+-- Status Tab
+local StatusTab = Window:MakeTab({
+    Name = "Status",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
 })
 
-AdvancedTab:AddButton({
-    Name = "Reload Script",
-    Callback = function()
-        OrionLib:MakeNotification({
-            Name = "Reloading...",
-            Content = "Script is restarting.",
-            Image = "rbxassetid://4483345998",
-            Time = 3
-        })
-        wait(1)
-        loadstring(game:HttpGet('https://github.com/robloxwiz/Mod-Strap/raw/main/main.lua'))()
-    end    
-})
+StatusTab:AddLabel("Script Status: Running Properly")
 
--- Danger Zone
-DangerTab:AddButton({
+-- Reset All Settings with Countdown
+SettingsTab:AddButton({
     Name = "Reset All Settings",
     Callback = function()
         local countdown = 3
@@ -89,38 +83,21 @@ DangerTab:AddButton({
                 wait(1)
                 countdownNotify()
             else
-                print("All settings reset")
-                -- Implement reset function here
+                OrionLib:ResetConfig()
+                print("All settings reset to default")
             end
         end
         countdownNotify()
     end
 })
 
--- Credits Section
-CreditsTab:AddLabel("Credits:")
-CreditsTab:AddLabel("- Original BloxStrap Developers")
-CreditsTab:AddLabel("- Original FishStrap Developers")
-CreditsTab:AddLabel("- Mobile BloxStrap Developers")
-CreditsTab:AddLabel("- Developed by Leo")
-
--- Load Past Settings (Prevents Data Loss)
-local function LoadSettings()
-    -- Placeholder for loading settings from files
-    print("Loading previous settings...")
+-- User File Structure
+local userFilePath = "MobileFishStrap/UserData/"
+if not isfolder(userFilePath) then
+    makefolder(userFilePath)
+    makefolder(userFilePath .. "Cursors")
+    makefolder(userFilePath .. "Fonts")
+    makefolder(userFilePath .. "FastFlags")
 end
-LoadSettings()
 
--- Prevent Crashes or Disconnections
-local function AntiCrash()
-    game:GetService("UserInputService").InputBegan:Connect(function(input)
-        if input.KeyCode == Enum.KeyCode.Escape then
-            print("Preventing crash...")
-            -- Add actual crash prevention logic here if necessary
-        end
-    end)
-end
-AntiCrash()
-
--- Initialize UI
 OrionLib:Init()
