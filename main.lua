@@ -14,13 +14,14 @@ local Window = OrionLib:MakeWindow({
     Draggable = true -- Make UI draggable
 })
 
--- Game Changer Tab
+-- Game Changer Tab 🛠️
 local GameChangerTab = Window:MakeTab({
     Name = "Game Changer 🛠️",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
+-- Adjusting FOV
 GameChangerTab:AddSlider({
     Name = "Adjust FOV",
     Min = 70,
@@ -33,13 +34,23 @@ GameChangerTab:AddSlider({
     end    
 })
 
--- Danger Tab
+-- Enable Feature
+GameChangerTab:AddToggle({
+    Name = "Enable Feature X",
+    Default = false,
+    Callback = function(Value)
+        print("Feature X is now", Value and "enabled" or "disabled")
+    end    
+})
+
+-- ⚠️ Danger Tab (for risky/reset options)
 local DangerTab = Window:MakeTab({
     Name = "⚠️ Danger",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
+-- Reset Settings Button
 DangerTab:AddButton({
     Name = "Reset All Settings",
     Callback = function()
@@ -64,40 +75,43 @@ DangerTab:AddButton({
     end
 })
 
--- Themes Tab
+-- Themes 🎨 Tab
 local ThemesTab = Window:MakeTab({
     Name = "Themes 🎨",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
+-- Themes Dropdown
 ThemesTab:AddDropdown({
     Name = "Select Theme",
     Default = "Default",
     Options = {"Default", "AmberGlow", "Amethyst", "Bloom", "DarkBlue", "Green", "Light", "Ocean", "Serenity"},
     Callback = function(Theme)
-        OrionLib:SetTheme(Theme)
+        Window:SetTheme(Theme) -- Make the theme change work properly
     end
 })
 
--- Status Tab
+-- Status 📊 Tab
 local StatusTab = Window:MakeTab({
     Name = "Status 📊",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
+-- Script Status Label
 StatusTab:AddLabel("Script Status: Running Properly")
 
--- Credits Tab
+-- Credits 💡 Tab
 local CreditsTab = Window:MakeTab({
     Name = "Credits 💡",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
-CreditsTab:AddLabel("Developed by Mobile FishStrap Team")
-CreditsTab:AddLabel("Special thanks to all contributors!")
+-- Credits Label
+CreditsTab:AddLabel("Mobile FishStrap by YourNameHere")
+CreditsTab:AddLabel("Special thanks to OrionLib for providing the UI framework!")
 
 -- User File Structure
 local userFilePath = "MobileFishStrap/UserData/"
