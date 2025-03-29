@@ -14,14 +14,14 @@ local Window = OrionLib:MakeWindow({
     Draggable = true -- Make UI draggable
 })
 
--- Settings Tab
-local SettingsTab = Window:MakeTab({
-    Name = "Settings",
+-- Game Changer Tab
+local GameChangerTab = Window:MakeTab({
+    Name = "Game Changer 🛠️",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
-SettingsTab:AddSlider({
+GameChangerTab:AddSlider({
     Name = "Adjust FOV",
     Min = 70,
     Max = 120,
@@ -33,48 +33,14 @@ SettingsTab:AddSlider({
     end    
 })
 
--- Themes Tab
-local ThemesTab = Window:MakeTab({
-    Name = "Themes",
+-- Danger Tab
+local DangerTab = Window:MakeTab({
+    Name = "⚠️ Danger",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
-ThemesTab:AddDropdown({
-    Name = "Select Theme",
-    Default = "Default",
-    Options = {"Default", "AmberGlow", "Amethyst", "Bloom", "DarkBlue", "Green", "Light", "Ocean", "Serenity"},
-    Callback = function(Theme)
-        OrionLib:SetTheme(Theme) -- Apply selected theme
-    end
-})
-
--- Status Tab
-local StatusTab = Window:MakeTab({
-    Name = "Status",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
-StatusTab:AddLabel("Script Status: Running Properly")
-
--- Game Enhancements Tab
-local GameTab = Window:MakeTab({
-    Name = "Game Changer 🛠️",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
-GameTab:AddToggle({
-    Name = "Enable Night Mode",
-    Default = false,
-    Callback = function(Value)
-        game.Lighting.Brightness = Value and 0.2 or 1
-    end    
-})
-
--- Reset All Settings with Countdown
-SettingsTab:AddButton({
+DangerTab:AddButton({
     Name = "Reset All Settings",
     Callback = function()
         local countdown = 3
@@ -97,6 +63,41 @@ SettingsTab:AddButton({
         countdownNotify()
     end
 })
+
+-- Themes Tab
+local ThemesTab = Window:MakeTab({
+    Name = "Themes 🎨",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+ThemesTab:AddDropdown({
+    Name = "Select Theme",
+    Default = "Default",
+    Options = {"Default", "AmberGlow", "Amethyst", "Bloom", "DarkBlue", "Green", "Light", "Ocean", "Serenity"},
+    Callback = function(Theme)
+        OrionLib:SetTheme(Theme)
+    end
+})
+
+-- Status Tab
+local StatusTab = Window:MakeTab({
+    Name = "Status 📊",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+StatusTab:AddLabel("Script Status: Running Properly")
+
+-- Credits Tab
+local CreditsTab = Window:MakeTab({
+    Name = "Credits 💡",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+CreditsTab:AddLabel("Developed by Mobile FishStrap Team")
+CreditsTab:AddLabel("Special thanks to all contributors!")
 
 -- User File Structure
 local userFilePath = "MobileFishStrap/UserData/"
