@@ -11,30 +11,30 @@ local Window = OrionLib:MakeWindow({
     Icon = "rbxassetid://123456789",
     IntroIcon = "rbxassetid://123456789",
     HidePremium = true,
-    Draggable = true -- Make UI draggable
+    Draggable = true
 })
 
--- Game Changer Tab 🛠️
+-- Game Changer Tab 🫠️
 local GameChangerTab = Window:MakeTab({
-    Name = "Game Changer 🛠️",
+    Name = "Game Changer 🫠️",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
--- Adjusting FOV
-GameChangerTab:AddSlider({
+-- Adjusting FOV with Text Input
+GameChangerTab:AddTextbox({
     Name = "Adjust FOV",
-    Min = 70,
-    Max = 120,
-    Default = 90,
-    Increment = 1,
-    ValueName = "FOV",
+    Default = "90",
+    TextDisappear = false,
     Callback = function(Value)
-        game.Workspace.CurrentCamera.FieldOfView = Value
+        local numValue = tonumber(Value)
+        if numValue and numValue >= 70 and numValue <= 120 then
+            game.Workspace.CurrentCamera.FieldOfView = numValue
+        end
     end    
 })
 
--- Enable Feature
+-- Enable Feature Toggle
 GameChangerTab:AddToggle({
     Name = "Enable Feature X",
     Default = false,
@@ -43,35 +43,29 @@ GameChangerTab:AddToggle({
     end    
 })
 
--- ⚠️ Danger Tab (for risky/reset options)
+-- ⚠️ Danger Tab
 local DangerTab = Window:MakeTab({
     Name = "⚠️ Danger",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
--- Reset Settings Button
+-- Reset Settings Button with Countdown
 DangerTab:AddButton({
     Name = "Reset All Settings",
     Callback = function()
         local countdown = 3
-        local function countdownNotify()
-            if countdown > 0 then
-                OrionLib:MakeNotification({
-                    Name = "Resetting in " .. countdown,
-                    Content = "All settings will be reset!",
-                    Image = "rbxassetid://4483345998",
-                    Time = 1
-                })
-                countdown = countdown - 1
-                wait(1)
-                countdownNotify()
-            else
-                OrionLib:ResetConfig()
-                print("All settings reset to default")
-            end
+        for i = countdown, 1, -1 do
+            OrionLib:MakeNotification({
+                Name = "Resetting in " .. i,
+                Content = "All settings will be reset!",
+                Image = "rbxassetid://4483345998",
+                Time = 1
+            })
+            wait(1)
         end
-        countdownNotify()
+        OrionLib:ResetConfig()
+        print("All settings reset to default")
     end
 })
 
@@ -88,7 +82,7 @@ ThemesTab:AddDropdown({
     Default = "Default",
     Options = {"Default", "AmberGlow", "Amethyst", "Bloom", "DarkBlue", "Green", "Light", "Ocean", "Serenity"},
     Callback = function(Theme)
-        Window:SetTheme(Theme) -- Make the theme change work properly
+        Window:SetTheme(Theme)
     end
 })
 
