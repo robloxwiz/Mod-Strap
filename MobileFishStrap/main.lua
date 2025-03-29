@@ -49,7 +49,7 @@ GameChangerTab:AddButton({
     Name = "Load Fonts",
     Callback = function()
         print("Loading Fonts...")
-        -- Add font loading logic here
+        -- Add font loading logic here (e.g., loading custom fonts)
     end
 })
 
@@ -57,7 +57,7 @@ GameChangerTab:AddButton({
     Name = "Load Cursors",
     Callback = function()
         print("Loading Cursors...")
-        -- Add cursor loading logic here
+        -- Add cursor loading logic here (e.g., loading custom cursors)
     end
 })
 
@@ -128,4 +128,5 @@ if not isfolder(userFilePath) then
     makefolder(userFilePath .. "FastFlags")
 end
 
+-- Initialize the script
 OrionLib:Init()
