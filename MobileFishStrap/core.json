@@ -1,1 +1,7 @@
-
+{
+    "audio": "custom_audio.mp3",
+    "fonts": "custom_font.ttf",
+    "cursors": "custom_cursor.png",
+    "theme": "Default",
+    "fov": 100
+}
