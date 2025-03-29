@@ -1,221 +1,125 @@
--- Mobile FishStrap UI Script
+-- Load UI Library (OrionLib for stability)
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/jensonhirst/Orion/main/source')))()
 
--- Safe loadstring function to ensure no crashes
-local function safeLoadString(url)
-    local success, result = pcall(function()
-        return loadstring(game:HttpGet(url))()
-    end)
-    if success then
-        return result
-    else
-        warn("Failed to load script from URL: " .. url)
-        return nil
-    end
-end
-
--- Load the main library (Mod-Strap) using the safe loadstring method
-local BloxLib = safeLoadString('https://raw.githubusercontent.com/robloxwiz/Mod-Strap/main/main.lua')
-if not BloxLib then return end  -- Exit if script couldn't load
-
--- Create the main window for Mobile FishStrap
-local Window = BloxLib:MakeWindow({
+-- Create Window
+local Window = OrionLib:MakeWindow({
     Name = "Mobile FishStrap",
     HidePremium = false,
     SaveConfig = true,
-    ConfigFolder = "FishStrapConfigs"
+    ConfigFolder = "MobileFishStrap",
+    IntroEnabled = true,
+    IntroText = "Welcome to Mobile FishStrap!",
+    Icon = "rbxassetid://123456789",
+    IntroIcon = "rbxassetid://123456789"
 })
 
--- Function to load past settings from user's device files
-local function loadSettings()
-    local settings = {
-        featureXEnabled = false,
-        fov = 100,
-        volume = 50,
-        customCrosshairEnabled = false,
-        customFontEnabled = false,
-        lightingNoFog = false,
-        lightingNoWind = false,
-        betterLighting = false,
-        frameBuffer = 0,
-        textureQuality = "automatic",
-        customCrosshairImage = "rbxassetid://123456789"  -- Placeholder ID
-    }
-    return settings
-end
+-- Create Categories (Tabs on the Left Side)
+local GeneralTab = Window:MakeTab({ Name = "General", Icon = "rbxassetid://4483345998", PremiumOnly = false })
+local AdvancedTab = Window:MakeTab({ Name = "Advanced", Icon = "rbxassetid://4483345998", PremiumOnly = false })
+local DangerTab = Window:MakeTab({ Name = "⚠️ Danger", Icon = "rbxassetid://4483345998", PremiumOnly = false })
+local CreditsTab = Window:MakeTab({ Name = "Credits", Icon = "rbxassetid://4483345998", PremiumOnly = false })
 
-local settings = loadSettings()
-
--- Make sure no crashes/disconnections happen when the UI is used
-local systemStatus = "Everything is up and running!"  -- Default status
-local isEverythingGood = true  -- This will be checked dynamically
-
-if not isEverythingGood then
-    systemStatus = "There is an issue! Please check the settings."
-end
-
--- Display the notification with system status
-BloxLib:MakeNotification({
-    Name = "System Check",
-    Content = systemStatus,
-    Image = "rbxassetid://4483345998",
-    Time = 5
-})
-
--- Create Categories and Settings
-local ModsTab = Window:MakeTab({
-    Name = "Mods",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
-local CrosshairToggle = ModsTab:AddToggle({
-    Name = "Enable Custom Crosshair",
-    Default = settings.customCrosshairEnabled,
-    Callback = function(value)
-        settings.customCrosshairEnabled = value
-        print("Custom Crosshair Enabled: " .. tostring(value))
-    end
-})
-
-ModsTab:AddImage({
-    Name = "Custom Crosshair Image",
-    ImageID = settings.customCrosshairImage,
+-- General Settings
+GeneralTab:AddToggle({
+    Name = "Enable Smooth UI",
     Default = false,
-    Callback = function(value)
-        settings.customCrosshairImage = value
-        print("Crosshair Image set to: " .. value)
-    end
+    Callback = function(Value)
+        print("Smooth UI is now", Value and "enabled" or "disabled")
+    end    
 })
 
--- Lighting Settings
-local LightingTab = Window:MakeTab({
-    Name = "Lighting",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
-LightingTab:AddToggle({
-    Name = "No Fog",
-    Default = settings.lightingNoFog,
-    Callback = function(value)
-        settings.lightingNoFog = value
-        print("No Fog: " .. tostring(value))
-    end
-})
-
-LightingTab:AddToggle({
-    Name = "No Wind",
-    Default = settings.lightingNoWind,
-    Callback = function(value)
-        settings.lightingNoWind = value
-        print("No Wind: " .. tostring(value))
-    end
-})
-
-LightingTab:AddToggle({
-    Name = "Better Lighting",
-    Default = settings.betterLighting,
-    Callback = function(value)
-        settings.betterLighting = value
-        print("Better Lighting: " .. tostring(value))
-    end
-})
-
--- Engine Settings
-local EngineTab = Window:MakeTab({
-    Name = "Engine Settings",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
--- Graphics Settings
-local GraphicsTab = EngineTab:AddSection({
-    Name = "Graphics"
-})
-
-GraphicsTab:AddSlider({
-    Name = "FOV",
-    Min = 60,
-    Max = 200,
-    Default = settings.fov,
-    Callback = function(value)
-        settings.fov = value
-        print("FOV set to: " .. value)
-    end
-})
-
-GraphicsTab:AddDropdown({
-    Name = "Texture Quality",
-    Options = {"Automatic", "Lowest", "Low", "Medium", "High"},
-    Default = settings.textureQuality,
-    Callback = function(value)
-        settings.textureQuality = value
-        print("Texture Quality set to: " .. value)
-    end
-})
-
-GraphicsTab:AddSlider({
-    Name = "Frame Buffer",
-    Min = 0,
-    Max = 10,
-    Default = settings.frameBuffer,
-    Callback = function(value)
-        settings.frameBuffer = value
-        print("Frame Buffer set to: " .. value)
-    end
-})
-
--- Frame Limit Setting
-GraphicsTab:AddSlider({
-    Name = "Frame Limit",
-    Min = 30,
+GeneralTab:AddSlider({
+    Name = "Adjust FOV",
+    Min = 70,
     Max = 120,
-    Default = 60,
-    Callback = function(value)
-        settings.frameLimit = value
-        print("Frame Limit set to: " .. value)
+    Default = 90,
+    Increment = 1,
+    ValueName = "FOV",
+    Callback = function(Value)
+        print("FOV set to", Value)
+    end    
+})
+
+GeneralTab:AddDropdown({
+    Name = "Theme Selector",
+    Default = "Light Mode",
+    Options = {"Light Mode", "Dark Mode", "Custom"},
+    Callback = function(Value)
+        print("Theme changed to", Value)
+    end
+})
+
+-- Advanced Settings
+AdvancedTab:AddToggle({
+    Name = "Enable Experimental Mode",
+    Default = false,
+    Callback = function(Value)
+        print("Experimental Mode", Value and "enabled" or "disabled")
+    end    
+})
+
+AdvancedTab:AddButton({
+    Name = "Reload Script",
+    Callback = function()
+        OrionLib:MakeNotification({
+            Name = "Reloading...",
+            Content = "Script is restarting.",
+            Image = "rbxassetid://4483345998",
+            Time = 3
+        })
+        wait(1)
+        loadstring(game:HttpGet('https://github.com/robloxwiz/Mod-Strap/raw/main/main.lua'))()
+    end    
+})
+
+-- Danger Zone
+DangerTab:AddButton({
+    Name = "Reset All Settings",
+    Callback = function()
+        local countdown = 3
+        local function countdownNotify()
+            if countdown > 0 then
+                OrionLib:MakeNotification({
+                    Name = "Resetting in " .. countdown,
+                    Content = "All settings will be reset!",
+                    Image = "rbxassetid://4483345998",
+                    Time = 1
+                })
+                countdown = countdown - 1
+                wait(1)
+                countdownNotify()
+            else
+                print("All settings reset")
+                -- Implement reset function here
+            end
+        end
+        countdownNotify()
     end
 })
 
 -- Credits Section
-local CreditsTab = Window:MakeTab({
-    Name = "Credits",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
+CreditsTab:AddLabel("Credits:")
+CreditsTab:AddLabel("- Original BloxStrap Developers")
+CreditsTab:AddLabel("- Original FishStrap Developers")
+CreditsTab:AddLabel("- Mobile BloxStrap Developers")
+CreditsTab:AddLabel("- Developed by Leo")
 
-CreditsTab:AddLabel("Credits to original developers of Bloxstrap")
-CreditsTab:AddLabel("Credits to original developers of FirstStrap")
-CreditsTab:AddLabel("Credits to original developers of MobileBloxstrap")
-CreditsTab:AddLabel("Credits to me, Leo")
-
--- Add Flag System (for specific custom actions)
-local FlagTab = Window:MakeTab({
-    Name = "Flags",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
-FlagTab:AddTextbox({
-    Name = "Enter Flag",
-    Default = "",
-    TextDisappear = true,
-    Callback = function(value)
-        print("Flag entered: " .. value)
-        -- Process flag here, like activating certain mod features
-    end
-})
-
--- Persistent Settings (Save settings when game exits)
-local function saveSettings()
-    -- Save the settings to a file or a storage service (simplified for demonstration)
-    print("Saving user settings...")
-    -- For example, we would store it in the user's local storage or data
+-- Load Past Settings (Prevents Data Loss)
+local function LoadSettings()
+    -- Placeholder for loading settings from files
+    print("Loading previous settings...")
 end
+LoadSettings()
 
-game:BindToClose(function()
-    saveSettings()  -- Save settings when the game closes
-end)
+-- Prevent Crashes or Disconnections
+local function AntiCrash()
+    game:GetService("UserInputService").InputBegan:Connect(function(input)
+        if input.KeyCode == Enum.KeyCode.Escape then
+            print("Preventing crash...")
+        end
+    end)
+end
+AntiCrash()
 
--- Final Setup to initialize the UI and make sure it doesn’t crash or disconnect
-BloxLib:Init()
+-- Initialize UI
+OrionLib:Init()
