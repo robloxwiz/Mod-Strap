@@ -116,6 +116,7 @@ local function AntiCrash()
     game:GetService("UserInputService").InputBegan:Connect(function(input)
         if input.KeyCode == Enum.KeyCode.Escape then
             print("Preventing crash...")
+            -- Add actual crash prevention logic here if necessary
         end
     end)
 end
