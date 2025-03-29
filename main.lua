@@ -9,7 +9,7 @@ local Window = OrionLib:MakeWindow({
     IntroText = "Welcome to Mobile FishStrap!",
     Icon = "rbxassetid://123456789",
     IntroIcon = "rbxassetid://123456789",
-    HidePremium = true,
+    HidePremium = false, -- Removed hiding Premium
     Draggable = true,
     Resizable = true,
     SizeX = 600,
@@ -149,6 +149,21 @@ local StatusTab = Window:MakeTab({
 })
 
 StatusTab:AddLabel("Script Status: Running Properly")
+
+-- Audio Category 🎵
+local AudioTab = Window:MakeTab({
+    Name = "Audio 🎵",
+    Icon = "rbxassetid://4483345998"
+})
+
+AudioTab:AddButton({
+    Name = "Play Default Audio",
+    Callback = function()
+        local sound = Instance.new("Sound", game.Workspace)
+        sound.SoundId = "rbxassetid://123456789"
+        sound:Play()
+    end
+})
 
 -- Credits 💡 Tab
 local CreditsTab = Window:MakeTab({
