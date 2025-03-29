@@ -90,7 +90,7 @@ DangerTab:AddButton({
 DangerTab:AddButton({
     Name = "Uneject",
     Callback = function()
-        OrionLib:Exit()
+        error("Script Unejected")
     end
 })
 
@@ -121,6 +121,24 @@ FastFlagTab:AddTextbox({
     TextDisappear = false,
     Callback = function(Value)
         print("FastFlag applied: " .. Value)
+    end
+})
+
+-- Animations 🔄 Tab
+local AnimationsTab = Window:MakeTab({
+    Name = "Animations 🔄",
+    Icon = "rbxassetid://4483345998"
+})
+
+AnimationsTab:AddToggle({
+    Name = "Enable Animations",
+    Default = true,
+    Callback = function(State)
+        if State then
+            print("Animations Enabled")
+        else
+            print("Animations Disabled")
+        end
     end
 })
 
