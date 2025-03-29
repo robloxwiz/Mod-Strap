@@ -9,11 +9,11 @@ local Window = OrionLib:MakeWindow({
     IntroText = "Welcome to Mobile FishStrap!",
     Icon = "rbxassetid://123456789",
     IntroIcon = "rbxassetid://123456789",
-    HidePremium = true, -- Premium settings removed
+    HidePremium = true,
     Draggable = true,
-    Resizable = true, -- Allow resizing for mobile users
-    SizeX = 600, -- Smaller window size for mobile users
-    SizeY = 400  -- Adjust height as well for mobile
+    Resizable = true,
+    SizeX = 600,
+    SizeY = 400
 })
 
 -- Game Changer Tab 🫠️
@@ -22,17 +22,51 @@ local GameChangerTab = Window:MakeTab({
     Icon = "rbxassetid://4483345998"
 })
 
--- Adjusting FOV with Text Input
+local fovValue = 100
 GameChangerTab:AddTextbox({
     Name = "Adjust FOV",
-    Default = "90",
+    Default = tostring(fovValue),
     TextDisappear = false,
     Callback = function(Value)
         local numValue = tonumber(Value)
-        if numValue and numValue >= 70 and numValue <= 120 then
+        if numValue and numValue >= 80 and numValue <= 110 then
             game.Workspace.CurrentCamera.FieldOfView = numValue
+            fovValue = numValue
         end
-    end    
+    end
+})
+
+GameChangerTab:AddButton({
+    Name = "Unlock FOV",
+    Callback = function()
+        game.Workspace.CurrentCamera.FieldOfView = 120
+        fovValue = 120
+        print("FOV unlocked")
+    end
+})
+
+GameChangerTab:AddButton({
+    Name = "Load Fonts",
+    Callback = function()
+        print("Loading Fonts...")
+        -- Add font loading logic here
+    end
+})
+
+GameChangerTab:AddButton({
+    Name = "Load Cursors",
+    Callback = function()
+        print("Loading Cursors...")
+        -- Add cursor loading logic here
+    end
+})
+
+GameChangerTab:AddButton({
+    Name = "Load FastFlags",
+    Callback = function()
+        print("Loading FastFlags...")
+        -- Add FastFlags logic here
+    end
 })
 
 -- ⚠️ Danger Tab
@@ -41,7 +75,6 @@ local DangerTab = Window:MakeTab({
     Icon = "rbxassetid://4483345998"
 })
 
--- Reset Settings Button with Countdown
 DangerTab:AddButton({
     Name = "Reset All Settings",
     Callback = function()
@@ -60,13 +93,12 @@ local ThemesTab = Window:MakeTab({
     Icon = "rbxassetid://4483345998"
 })
 
--- Themes Dropdown
 ThemesTab:AddDropdown({
     Name = "Select Theme",
     Default = "Default",
     Options = {"Default", "AmberGlow", "Amethyst", "Bloom", "DarkBlue", "Green", "Light", "Ocean", "Serenity"},
     Callback = function(Theme)
-        Window:SetTheme(Theme)  -- Correct function for theme change
+        Window:SetTheme(Theme)
     end
 })
 
@@ -76,7 +108,6 @@ local StatusTab = Window:MakeTab({
     Icon = "rbxassetid://4483345998"
 })
 
--- Script Status Label
 StatusTab:AddLabel("Script Status: Running Properly")
 
 -- Credits 💡 Tab
@@ -85,7 +116,6 @@ local CreditsTab = Window:MakeTab({
     Icon = "rbxassetid://4483345998"
 })
 
--- Credits Label
 CreditsTab:AddLabel("Mobile FishStrap by Leo yes you read that right!")
 CreditsTab:AddLabel("Special thanks to you all!")
 
