@@ -86,8 +86,8 @@ local CreditsTab = Window:MakeTab({
 })
 
 -- Credits Label
-CreditsTab:AddLabel("Mobile FishStrap by YourNameHere")
-CreditsTab:AddLabel("Special thanks to OrionLib for providing the UI framework!")
+CreditsTab:AddLabel("Mobile FishStrap by Leo yes you read that right!")
+CreditsTab:AddLabel("Special thanks to you all!")
 
 -- User File Structure
 local userFilePath = "MobileFishStrap/UserData/"
