@@ -33,14 +33,6 @@ SettingsTab:AddSlider({
     end    
 })
 
-SettingsTab:AddToggle({
-    Name = "Enable Smooth UI",
-    Default = false,
-    Callback = function(Value)
-        OrionLib.SmoothUI = Value
-    end    
-})
-
 -- Themes Tab
 local ThemesTab = Window:MakeTab({
     Name = "Themes",
@@ -53,7 +45,7 @@ ThemesTab:AddDropdown({
     Default = "Default",
     Options = {"Default", "AmberGlow", "Amethyst", "Bloom", "DarkBlue", "Green", "Light", "Ocean", "Serenity"},
     Callback = function(Theme)
-        Window:ModifyTheme(Theme)
+        OrionLib:SetTheme(Theme) -- Apply selected theme
     end
 })
 
@@ -65,6 +57,21 @@ local StatusTab = Window:MakeTab({
 })
 
 StatusTab:AddLabel("Script Status: Running Properly")
+
+-- Game Enhancements Tab
+local GameTab = Window:MakeTab({
+    Name = "Game Changer 🛠️",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+GameTab:AddToggle({
+    Name = "Enable Night Mode",
+    Default = false,
+    Callback = function(Value)
+        game.Lighting.Brightness = Value and 0.2 or 1
+    end    
+})
 
 -- Reset All Settings with Countdown
 SettingsTab:AddButton({
