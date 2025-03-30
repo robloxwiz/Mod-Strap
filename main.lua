@@ -17,6 +17,15 @@ local Window = Rayfield:CreateWindow({
     KeySystem = false
 })
 
+-- Ensure all required folders exist
+local userFilePath = "MobileFishStrap/UserData/"
+local folders = { "Audio", "Core", "Fonts", "Images", "Logs", "Cursors" }
+for _, folder in ipairs(folders) do
+    if not isfolder(userFilePath .. folder) then
+        makefolder(userFilePath .. folder)
+    end
+end
+
 -- Game Changer Tab 🛠️
 local GameChangerTab = Window:CreateTab("Game Changer 🛠️", 4483345998)
 
@@ -35,6 +44,20 @@ GameChangerTab:CreateButton({
     Name = "Unlock FOV",
     Callback = function()
         game.Workspace.CurrentCamera.FieldOfView = 120
+    end
+})
+
+GameChangerTab:CreateButton({
+    Name = "Load Fonts",
+    Callback = function()
+        print("Loading Fonts...")
+    end
+})
+
+GameChangerTab:CreateButton({
+    Name = "Load Cursors",
+    Callback = function()
+        print("Loading Cursors...")
     end
 })
 
@@ -82,6 +105,25 @@ AudioTab:CreateButton({
         local sound = Instance.new("Sound", game.Workspace)
         sound.SoundId = "rbxassetid://123456789"
         sound:Play()
+    end
+})
+
+-- Danger ⚠️ Tab
+local DangerTab = Window:CreateTab("⚠️ Danger", 4483345998)
+DangerTab:CreateButton({
+    Name = "Reset All Settings",
+    Callback = function()
+        for i = 3, 1, -1 do
+            wait(1)
+        end
+        Rayfield:ResetConfig()
+    end
+})
+
+DangerTab:CreateButton({
+    Name = "Uneject",
+    Callback = function()
+        error("Script Unejected")
     end
 })
 
