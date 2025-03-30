@@ -1,20 +1,20 @@
--- Fully Functional Rayfield Library Implementation with Visible and Working Features
+-- Fully Functional OrionLib Implementation with Visible and Working Features
 
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/jensonhirst/Orion/main/source')))()
 
-local Window = Rayfield:CreateWindow({
+local Window = OrionLib:MakeWindow({
     Name = "Mobile FishStrap",
-    LoadingTitle = "Mobile FishStrap",
-    LoadingSubtitle = "by Leo",
-    ConfigurationSaving = {
-        Enabled = true,
-        FolderName = "MobileFishStrap",
-        FileName = "config"
-    },
-    Discord = {
-        Enabled = false
-    },
-    KeySystem = false
+    SaveConfig = true,
+    ConfigFolder = "MobileFishStrap",
+    IntroEnabled = true,
+    IntroText = "Welcome to Mobile FishStrap!",
+    Icon = "rbxassetid://123456789",
+    IntroIcon = "rbxassetid://123456789",
+    HidePremium = false,
+    Draggable = true,
+    Resizable = true,
+    SizeX = 600,
+    SizeY = 400
 })
 
 -- Ensure all required folders exist
@@ -27,34 +27,38 @@ for _, folder in ipairs(folders) do
 end
 
 -- Game Changer Tab 🛠️
-local GameChangerTab = Window:CreateTab("Game Changer 🛠️", 4483345998)
+local GameChangerTab = Window:MakeTab({
+    Name = "Game Changer 🛠️",
+    Icon = "rbxassetid://4483345998"
+})
 
-GameChangerTab:CreateSlider({
+GameChangerTab:AddTextbox({
     Name = "Adjust FOV",
-    Range = {80, 120},
-    Increment = 1,
-    Suffix = "FOV",
-    CurrentValue = 100,
+    Default = "100",
+    TextDisappear = false,
     Callback = function(Value)
-        game.Workspace.CurrentCamera.FieldOfView = Value
+        local numValue = tonumber(Value)
+        if numValue and numValue >= 80 and numValue <= 110 then
+            game.Workspace.CurrentCamera.FieldOfView = numValue
+        end
     end
 })
 
-GameChangerTab:CreateButton({
+GameChangerTab:AddButton({
     Name = "Unlock FOV",
     Callback = function()
         game.Workspace.CurrentCamera.FieldOfView = 120
     end
 })
 
-GameChangerTab:CreateButton({
+GameChangerTab:AddButton({
     Name = "Load Fonts",
     Callback = function()
         print("Loading Fonts...")
     end
 })
 
-GameChangerTab:CreateButton({
+GameChangerTab:AddButton({
     Name = "Load Cursors",
     Callback = function()
         print("Loading Cursors...")
@@ -62,44 +66,59 @@ GameChangerTab:CreateButton({
 })
 
 -- Themes 🎨 Tab
-local ThemesTab = Window:CreateTab("Themes 🎨", 4483345998)
-ThemesTab:CreateDropdown({
+local ThemesTab = Window:MakeTab({
+    Name = "Themes 🎨",
+    Icon = "rbxassetid://4483345998"
+})
+ThemesTab:AddDropdown({
     Name = "Select Theme",
+    Default = "Default",
     Options = {"Default", "AmberGlow", "Amethyst", "Bloom", "DarkBlue", "Green", "Light", "Ocean", "Serenity"},
-    CurrentOption = "Default",
     Callback = function(Theme)
-        Rayfield:SetTheme(Theme)
+        Window:SetTheme(Theme)
     end
 })
 
 -- FastFlag Editor Tab
-local FastFlagTab = Window:CreateTab("FastFlag Editor", 4483345998)
-FastFlagTab:CreateInput({
+local FastFlagTab = Window:MakeTab({
+    Name = "FastFlag Editor",
+    Icon = "rbxassetid://4483345998"
+})
+FastFlagTab:AddTextbox({
     Name = "FastFlag Text",
-    PlaceholderText = "Enter FastFlag",
-    RemoveTextAfterFocusLost = false,
+    Default = "",
+    TextDisappear = false,
     Callback = function(Value)
         print("FastFlag applied: " .. Value)
     end
 })
 
 -- Animations 🔄 Tab
-local AnimationsTab = Window:CreateTab("Animations 🔄", 4483345998)
-AnimationsTab:CreateToggle({
+local AnimationsTab = Window:MakeTab({
+    Name = "Animations 🔄",
+    Icon = "rbxassetid://4483345998"
+})
+AnimationsTab:AddToggle({
     Name = "Enable Animations",
-    CurrentValue = true,
+    Default = true,
     Callback = function(State)
         print("Animations " .. (State and "Enabled" or "Disabled"))
     end
 })
 
 -- Status 📊 Tab
-local StatusTab = Window:CreateTab("Status 📊", 4483345998)
-StatusTab:CreateLabel("Script Status: Running Properly")
+local StatusTab = Window:MakeTab({
+    Name = "Status 📊",
+    Icon = "rbxassetid://4483345998"
+})
+StatusTab:AddLabel("Script Status: Running Properly")
 
 -- Audio Category 🎵
-local AudioTab = Window:CreateTab("Audio 🎵", 4483345998)
-AudioTab:CreateButton({
+local AudioTab = Window:MakeTab({
+    Name = "Audio 🎵",
+    Icon = "rbxassetid://4483345998"
+})
+AudioTab:AddButton({
     Name = "Play Default Audio",
     Callback = function()
         local sound = Instance.new("Sound", game.Workspace)
@@ -109,18 +128,21 @@ AudioTab:CreateButton({
 })
 
 -- Danger ⚠️ Tab
-local DangerTab = Window:CreateTab("⚠️ Danger", 4483345998)
-DangerTab:CreateButton({
+local DangerTab = Window:MakeTab({
+    Name = "⚠️ Danger",
+    Icon = "rbxassetid://4483345998"
+})
+DangerTab:AddButton({
     Name = "Reset All Settings",
     Callback = function()
         for i = 3, 1, -1 do
             wait(1)
         end
-        Rayfield:ResetConfig()
+        OrionLib:ResetConfig()
     end
 })
 
-DangerTab:CreateButton({
+DangerTab:AddButton({
     Name = "Uneject",
     Callback = function()
         error("Script Unejected")
@@ -128,8 +150,11 @@ DangerTab:CreateButton({
 })
 
 -- Credits 💡 Tab
-local CreditsTab = Window:CreateTab("Credits 💡", 4483345998)
-CreditsTab:CreateLabel("Mobile FishStrap by Leo")
-CreditsTab:CreateLabel("Special thanks to everyone!")
+local CreditsTab = Window:MakeTab({
+    Name = "Credits 💡",
+    Icon = "rbxassetid://4483345998"
+})
+CreditsTab:AddLabel("Mobile FishStrap by Leo")
+CreditsTab:AddLabel("Special thanks to everyone!")
 
-Rayfield:LoadConfiguration()
+OrionLib:Init()
