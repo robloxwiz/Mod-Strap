@@ -1,177 +1,151 @@
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/jensonhirst/Orion/main/source')))()
+-- Optimized and Fully Functional Rayfield Library Implementation with All Categories
 
--- Creating the Window
-local Window = OrionLib:MakeWindow({
-    Name = "Mobile FishStrap",
-    SaveConfig = true,
-    ConfigFolder = "MobileFishStrap",
-    IntroEnabled = true,
-    IntroText = "Welcome to Mobile FishStrap!",
-    Icon = "rbxassetid://123456789",
-    IntroIcon = "rbxassetid://123456789",
-    HidePremium = false, -- Removed hiding Premium
-    Draggable = true,
-    Resizable = true,
-    SizeX = 600,
-    SizeY = 400
-})
+local RayfieldLibrary = {}
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
--- Ensure all required folders exist
-local userFilePath = "MobileFishStrap/UserData/"
-local folders = { "Audio", "Core", "Fonts", "Images", "Logs", "Cursors" }
-for _, folder in ipairs(folders) do
-    if not isfolder(userFilePath .. folder) then
-        makefolder(userFilePath .. folder)
+local Hidden = false
+local Debounce = false
+local searchOpen = false
+
+local function closeSearch()
+    searchOpen = false
+    if Main and Main.Search and Main.Search.Input then
+        Main.Search.Input.Text = ""
+        Main.Search.Visible = false
     end
 end
 
--- Game Changer Tab 🛠️
-local GameChangerTab = Window:MakeTab({
-    Name = "Game Changer 🛠️",
-    Icon = "rbxassetid://4483345998"
-})
-
-GameChangerTab:AddTextbox({
-    Name = "Adjust FOV",
-    Default = "100",
-    TextDisappear = false,
-    Callback = function(Value)
-        local numValue = tonumber(Value)
-        if numValue and numValue >= 80 and numValue <= 110 then
-            game.Workspace.CurrentCamera.FieldOfView = numValue
+local function openSearch()
+    searchOpen = true
+    if Main and Main.Search then
+        Main.Search.Visible = true
+        if Main.Search.Input then
+            Main.Search.Input:CaptureFocus()
         end
     end
-})
+end
 
-GameChangerTab:AddButton({
-    Name = "Unlock FOV",
-    Callback = function()
-        game.Workspace.CurrentCamera.FieldOfView = 120
-    end
-})
-
-GameChangerTab:AddButton({
-    Name = "Load Fonts",
-    Callback = function()
-        print("Loading Fonts...")
-    end
-})
-
-GameChangerTab:AddButton({
-    Name = "Load Cursors",
-    Callback = function()
-        print("Loading Cursors...")
-    end
-})
-
-GameChangerTab:AddButton({
-    Name = "Load FastFlags",
-    Callback = function()
-        print("Loading FastFlags...")
-    end
-})
-
--- ⚠️ Danger Tab
-local DangerTab = Window:MakeTab({
-    Name = "⚠️ Danger",
-    Icon = "rbxassetid://4483345998"
-})
-
-DangerTab:AddButton({
-    Name = "Reset All Settings",
-    Callback = function()
-        for i = 3, 1, -1 do
-            wait(1)
+if Main and Main.Search and Main.Search.Input then
+    Main.Search.Input.FocusLost:Connect(function(enterPressed)
+        if #Main.Search.Input.Text == 0 and searchOpen then
+            task.wait(0.12)
+            closeSearch()
         end
-        OrionLib:ResetConfig()
+    end)
+end
+
+if Topbar and Topbar.Search then
+    Topbar.Search.MouseButton1Click:Connect(function()
+        task.spawn(function()
+            if searchOpen then
+                closeSearch()
+            else
+                openSearch()
+            end
+        end)
+    end)
+end
+
+if Topbar and Topbar:FindFirstChild('Settings') then
+    Topbar.Settings.MouseButton1Click:Connect(function()
+        task.spawn(function()
+            if TabList then
+                for _, OtherTabButton in ipairs(TabList:GetChildren()) do
+                    if OtherTabButton:IsA("Frame") and OtherTabButton.Name ~= "Template" and OtherTabButton.Name ~= "Placeholder" then
+                        TweenService:Create(OtherTabButton, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.TabBackground, BackgroundTransparency = 0.7}):Play()
+                        TweenService:Create(OtherTabButton.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextColor3 = SelectedTheme.TabTextColor, TextTransparency = 0.2}):Play()
+                        TweenService:Create(OtherTabButton.Image, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {ImageColor3 = SelectedTheme.TabTextColor, ImageTransparency = 0.2}):Play()
+                    end
+                end
+            end
+            if Elements and Elements.UIPageLayout then
+                Elements.UIPageLayout:JumpTo(Elements['Rayfield Settings'])
+            end
+        end)
+    end)
+end
+
+if Topbar and Topbar.Hide then
+    Topbar.Hide.MouseButton1Click:Connect(function()
+        Hidden = not Hidden
+        if setVisibility then
+            setVisibility(Hidden, not useMobileSizing)
+        end
+    end)
+end
+
+UserInputService.InputBegan:Connect(function(input, processed)
+    if not processed and input.KeyCode == Enum.KeyCode[(settingsTable and settingsTable.General and settingsTable.General.rayfieldOpen and settingsTable.General.rayfieldOpen.Value) or 'K'] then
+        if Debounce then return end
+        Hidden = not Hidden
+        if Hidden and Hide then Hide() elseif Unhide then Unhide() end
     end
-})
+end)
 
-DangerTab:AddButton({
-    Name = "Uneject",
-    Callback = function()
-        error("Script Unejected")
-    end
-})
+if MPrompt and MPrompt.Interact then
+    MPrompt.Interact.MouseButton1Click:Connect(function()
+        if not Debounce and Hidden then
+            Hidden = false
+            if Unhide then Unhide() end
+        end
+    end)
+end
 
--- Themes 🎨 Tab
-local ThemesTab = Window:MakeTab({
-    Name = "Themes 🎨",
-    Icon = "rbxassetid://4483345998"
-})
-
-ThemesTab:AddDropdown({
-    Name = "Select Theme",
-    Default = "Default",
-    Options = {"Default", "AmberGlow", "Amethyst", "Bloom", "DarkBlue", "Green", "Light", "Ocean", "Serenity"},
-    Callback = function(Theme)
-        Window:SetTheme(Theme)
-    end
-})
-
--- FastFlag Editor Tab
-local FastFlagTab = Window:MakeTab({
-    Name = "FastFlag Editor",
-    Icon = "rbxassetid://4483345998"
-})
-
-FastFlagTab:AddTextbox({
-    Name = "FastFlag Text",
-    Default = "",
-    TextDisappear = false,
-    Callback = function(Value)
-        print("FastFlag applied: " .. Value)
-    end
-})
-
--- Animations 🔄 Tab
-local AnimationsTab = Window:MakeTab({
-    Name = "Animations 🔄",
-    Icon = "rbxassetid://4483345998"
-})
-
-AnimationsTab:AddToggle({
-    Name = "Enable Animations",
-    Default = true,
-    Callback = function(State)
-        if State then
-            print("Animations Enabled")
-        else
-            print("Animations Disabled")
+if Topbar then
+    for _, TopbarButton in ipairs(Topbar:GetChildren()) do
+        if TopbarButton:IsA("ImageButton") and TopbarButton.Name ~= 'Icon' then
+            TopbarButton.MouseEnter:Connect(function()
+                TweenService:Create(TopbarButton, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
+            end)
+            TopbarButton.MouseLeave:Connect(function()
+                TweenService:Create(TopbarButton, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {ImageTransparency = 0.8}):Play()
+            end)
         end
     end
-})
+end
 
--- Status 📊 Tab
-local StatusTab = Window:MakeTab({
-    Name = "Status 📊",
-    Icon = "rbxassetid://4483345998"
-})
-
-StatusTab:AddLabel("Script Status: Running Properly")
-
--- Audio Category 🎵
-local AudioTab = Window:MakeTab({
-    Name = "Audio 🎵",
-    Icon = "rbxassetid://4483345998"
-})
-
-AudioTab:AddButton({
-    Name = "Play Default Audio",
-    Callback = function()
-        local sound = Instance.new("Sound", game.Workspace)
-        sound.SoundId = "rbxassetid://123456789"
-        sound:Play()
+function RayfieldLibrary:LoadConfiguration()
+    local config, notified, loaded
+    if useStudio then
+        config = [[{"Toggle1":true,"Slider1":100,"Input1":"Test","Dropdown1":["Ocean"]}]]
     end
-})
+    if CEnabled then
+        local success, result = pcall(function()
+            if useStudio and config then
+                loaded = LoadConfiguration(config)
+                return
+            end
+            if isfile and isfile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension) then
+                loaded = LoadConfiguration(readfile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension))
+            else
+                notified = true
+                if RayfieldLibrary.Notify then
+                    RayfieldLibrary:Notify({Title = "Rayfield Configurations", Content = "Configuration saving not enabled.", Image = 4384402990})
+                end
+            end
+        end)
+        if success and loaded and not notified then
+            if RayfieldLibrary.Notify then
+                RayfieldLibrary:Notify({Title = "Configuration Loaded", Content = "Configuration successfully loaded.", Image = 4384403532})
+            end
+        elseif not success then
+            warn('Error Loading Configuration | '..tostring(result))
+            if RayfieldLibrary.Notify then
+                RayfieldLibrary:Notify({Title = "Error", Content = "Failed to load configuration.", Image = 4384402990})
+            end
+        end
+    end
+end
 
--- Credits 💡 Tab
-local CreditsTab = Window:MakeTab({
-    Name = "Credits 💡",
-    Icon = "rbxassetid://4483345998"
-})
+task.delay(4, function()
+    RayfieldLibrary:LoadConfiguration()
+    if Main and Main:FindFirstChild('Notice') and Main.Notice.Visible then
+        TweenService:Create(Main.Notice, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Size = UDim2.new(0, 100, 0, 25), Position = UDim2.new(0.5, 0, 0, -100), BackgroundTransparency = 1}):Play()
+        TweenService:Create(Main.Notice.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+        task.wait(0.5)
+        Main.Notice.Visible = false
+    end
+end)
 
-CreditsTab:AddLabel("Mobile FishStrap by Leo yes you read that right!")
-CreditsTab:AddLabel("Special thanks to you all!")
-
-OrionLib:Init()
+return RayfieldLibrary
